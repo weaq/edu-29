@@ -19,12 +19,12 @@ get_header();
 
 		// group status
 		$arr_group_status = [
-			"1" => "อปท",
-			"21" => "สพป",
-			"22" => "สพม",
+			"1" => [ "short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ", ],
+			"21" => [ "short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน", ],
+			"22" => [ "short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน", ],
 		];
-
-		echo '<div>';
+		echo '<div class="row">';
+		echo '<div class="col-md-4">';
 		echo '<strong>กลุ่ม : </strong>';
 		echo '<select name="group" onchange="location = this.value;">';
 		echo '<option value="?group_status_id=0" selected >กรุณาเลือกกลุ่ม</option>';
@@ -32,7 +32,7 @@ get_header();
 		foreach ($arr_group_status as $key => $value) {
 			$selected = ($_GET['group_status_id'] == $key) ? "selected" : "";
 			// list
-			echo '<option value="?group_status_id=' . $key . '" ' . $selected . '>' . $value . '</option>';
+			echo '<option value="?group_status_id=' . $key . '" ' . $selected . '>' . $value['short_name'] . '</option>';
 		}
 
 		echo '</select>';
@@ -44,7 +44,7 @@ get_header();
 			$sql = "SELECT DISTINCT(group_id) as group_id, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' ORDER BY group_id ASC";
 			$query = $wpdb->get_results($sql, ARRAY_A);
 
-			echo '<div>';
+			echo '<div class="col-md-8">';
 			echo '<strong>กลุ่มสาระการเรียนรู้ : </strong>';
 			echo '<select name="group" onchange="location = this.value;">';
 			echo '<option value="?group_status_id=' . $_GET['group_status_id'] . '&group_id=0" selected >กรุณาเลือกกลุ่มสาระ</option>';
@@ -59,6 +59,8 @@ get_header();
 			echo '</div>';
 		}
 
+		echo "</div>";
+
 		// class
 		if ($_GET['group_status_id'] && $_GET['group_id']) {
 
@@ -70,12 +72,11 @@ get_header();
 			//
 			echo '<div>';
 
-			$sql = "SELECT COUNT(activity_name), activity_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_name ASC";
+			$sql = "SELECT COUNT(activity_name), activity_name, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_name ASC";
 
 			$query = $wpdb->get_results($sql, ARRAY_A);
 
-
-			echo '<div class="fs-3 mt-3">กลุ่มสาระการเรียนรู้ : ' . $query[0]['group_name'] . '</div>';
+			echo '<div class="fs-3 mt-3">รายการ' . $arr_group_status[$_GET['group_status_id']]['name'] . ' (' . $arr_group_status[$_GET['group_status_id']]['short_name'] . ') กลุ่มสาระการเรียนรู้ : ' . $query[0]['group_name'] . '</div>';
 
 	?>
 
@@ -145,6 +146,8 @@ get_header();
 	<?php
 		}
 	}
+
+	echo '<div><b>หมายเหตุ : </b> จำนวนนักเรียนที่ลงทะเบียน / จำนวนครูที่ลงทะเบียน</div>';
 	echo '</div>';
 
 	?>
