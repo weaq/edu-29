@@ -74,8 +74,14 @@ function submitsForm($params)
 	$error = 0;
 	$arr_insert_id = [];
 
-	$school_id = filter_var($params['school_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-	$go_id = filter_var($params['go_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$current_user = wp_get_current_user();
+
+	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
+
+	$school_id = filter_var($wp_schools[0]['school_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$go_id = filter_var($wp_schools[0]['go_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
 	$groupsara_id = filter_var($params['groupsara_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$activity_id = filter_var($params['activity_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$class_id = filter_var($params['class_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -111,16 +117,16 @@ function submitsForm($params)
 				";
 
 				if ($wpdb->query($sql)) {
-				
-					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						echo $_FILES['student_img']['tmp_name'][$i];
 						echo "<br/>";
 					}
-					
+
 
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
 
-					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
 					}
 				} else {
@@ -143,8 +149,8 @@ function submitsForm($params)
 				";
 
 				$arr_insert_id['student'][$i] = $student_reg_chk[$i]['ID'];
-				
-				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+
+				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 					upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID']);
 				}
 
@@ -171,10 +177,9 @@ function submitsForm($params)
 				if ($wpdb->query($sql)) {
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
 
-					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
 					}
-
 				} else {
 					$error = 3;
 				}
@@ -207,8 +212,8 @@ function submitsForm($params)
 
 					if ($wpdb->query($sql)) {
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
-						
-						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+
+						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
 						}
 					} else {
@@ -232,8 +237,8 @@ function submitsForm($params)
 				";
 
 					$arr_insert_id['teacher'][$i] = $teacher_reg_chk[$i]['ID'];
-					
-					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+
+					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 						upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID']);
 					}
 
@@ -260,8 +265,8 @@ function submitsForm($params)
 
 					if ($wpdb->query($sql)) {
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
-						
-						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+
+						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
 						}
 					} else {
@@ -290,7 +295,8 @@ function submitsForm($params)
 function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 {
 
-	$uploadDirectory = "/var/www/html/wordpress/img-upload/";
+	//$uploadDirectory = "/var/www/html/wordpress/img-upload/";
+	$uploadDirectory = "/domains/udon-vichakarn.com/public_html/img-upload/";
 
 	$upload_errors = []; // Store errors here
 
@@ -303,13 +309,13 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 	$fileType = $image['type'];
 	*/
 
-	
+
 	$fileExtension = strtolower(end(explode('.', $fileName)));
 
 
 	$uploadPath = $uploadDirectory . basename($id) . '.' . $fileExtension;
 
-	echo "<br/>". $uploadPath;
+	echo "<br/>" . $uploadPath;
 
 	if (!in_array($fileExtension, $fileExtensionsAllowed)) {
 		$upload_errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
@@ -332,6 +338,4 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 			echo $error . "These are the upload_errors" . "<br/>\n";
 		}
 	}
-
-	
 }

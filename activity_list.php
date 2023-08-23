@@ -13,8 +13,6 @@ get_header();
 
 	$current_user = wp_get_current_user();
 
-
-
 	global $wpdb;
 
 	// group status
@@ -23,6 +21,12 @@ get_header();
 		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 	];
+
+	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
+
+	echo '<div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>';
+
 	echo '<div class="row">';
 	echo '<div class="col-md-4">';
 	echo '<strong>กลุ่ม : </strong>';
@@ -72,7 +76,7 @@ get_header();
 		//
 		echo '<div>';
 
-		$sql = "SELECT COUNT(activity_name), activity_name, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_name ASC";
+		$sql = "SELECT COUNT(activity_name), activity_name, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_id ASC";
 
 		$query = $wpdb->get_results($sql, ARRAY_A);
 
@@ -123,13 +127,12 @@ get_header();
 								$result_count_teacher = $wpdb->get_results($sql, ARRAY_A);
 
 								if (empty($result_count_student[0]['cid']) && empty($result_count_teacher[0]['cid'])) {
-									echo '<td class="text-center"><a href="./regis-form/?sID=' . $result_activity[0]['ID'] . '">ไม่ได้ส่ง</a></td>';
-								} else if ($result_count_student[0]['cid'] == $result_activity[0]['student_no'] && $result_count_teacher[0]['cid'] == $result_activity[0]['teacher_no'] ) {
-									echo '<td class="text-center"><a href="./regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งแล้ว</a></td>';
+									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ไม่ได้ส่ง</a></td>';
+								} else if ($result_count_student[0]['cid'] == $result_activity[0]['student_no'] && $result_count_teacher[0]['cid'] == $result_activity[0]['teacher_no']) {
+									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งแล้ว</a></td>';
 								} else {
-									echo '<td class="text-center"><a href="./regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
+									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
 								}
-
 							} else {
 								echo '<td class="bg-secondary">&nbsp;</td>';
 							}

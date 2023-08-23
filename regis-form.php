@@ -51,6 +51,7 @@ global $wpdb;
 
         $output = '
 		<div class="container my-3">
+            <div class="fs-4">' . $wp_schools[0]['school_name']. '</div>
             <div class="fs-4 fw-bold">ลงทะเบียน' . $arr_group_status[$wp_groupsara[0]['group_status']]['name'] . '<br/>' . $wp_groupsara[0]['activity_name'] . ' '  . $wp_groupsara[0]['class_name'] . ' '  . '</div>
 
 
@@ -87,13 +88,13 @@ global $wpdb;
         }
 
 
-if ($wp_groupsara[0]['class_id'] != "11") {
-        $output .= '
+        if ($wp_groupsara[0]['class_id'] != "11") {
+            $output .= '
 			<div class="fs-5 fw-bold text-center mt-3">ชื่อผู้ควบคุม</div>
 			';
-        for ($i = 0; $i < $wp_groupsara[0]['teacher_no']; $i++) {
-            $tmp_num = $i + 1;
-            $output .= '
+            for ($i = 0; $i < $wp_groupsara[0]['teacher_no']; $i++) {
+                $tmp_num = $i + 1;
+                $output .= '
             <div class="border px-3 py-3 my-3">
 			<div class="fw-bold">ผู้ควบคุม คนที่ ' . $tmp_num . '</div>
             <div class="row">
@@ -124,9 +125,8 @@ if ($wp_groupsara[0]['class_id'] != "11") {
 			</div>
 
 			';
+            }
         }
-
-    }
 
         $output .= '
         <div class="mt-3 mb-3 text-center">
@@ -137,16 +137,18 @@ if ($wp_groupsara[0]['class_id'] != "11") {
             <input type="hidden" id="class_id" name="class_id" value="' . $wp_groupsara[0]['class_id'] . '">
 
             <input type="hidden" name="action" value="contact_form">
-            <input type="hidden" name="base_page" value="' . get_permalink( get_queried_object_id() ) . '">
+            <input type="hidden" name="base_page" value="' . get_permalink(get_queried_object_id()) . '">
 
             <button type="submit" class="btn btn-primary mb-3">บันทึกข้อมูล</button>
         </div>
         ';
 
         $output .= ' </div> ';
-    }
+    } 
+    
+    
     echo $output;
-    ?>
+        ?>
 
 </form>
 
