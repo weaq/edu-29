@@ -111,9 +111,17 @@ function submitsForm($params)
 				";
 
 				if ($wpdb->query($sql)) {
+				
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+						echo $_FILES['student_img']['tmp_name'][$i];
+						echo "<br/>";
+					}
+					
+
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
-					if (isset($params['student_img'][$i])) {
-						upload_img($params['student_img'][$i], $wpdb->insert_id);
+
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
 					}
 				} else {
 					$error = 1;
@@ -129,18 +137,15 @@ function submitsForm($params)
 			$student_firstname = filter_var($params['student_firstname'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 			$student_lastname = filter_var($params['student_lastname'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-			$img = 'student_img[' . $i . ']';
-
-			echo isset($_FILES[$img]['name']);
-
 			if (!empty($student_prefix) && !empty($student_firstname) && !empty($student_lastname)) {
 
 				$sql = "UPDATE wp_studentreg SET student_prefix = '{$student_prefix}', student_firstname = '{$student_firstname}', student_lastname = '{$student_lastname}' WHERE ID = {$student_reg_chk[$i]['ID']} 
 				";
 
 				$arr_insert_id['student'][$i] = $student_reg_chk[$i]['ID'];
-				if (isset($params['student_img'][$i])) {
-					upload_img($params['student_img'][$i], $student_reg_chk[$i]['ID']);
+				
+				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+					upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID']);
 				}
 
 				if ($wpdb->query($sql)) {
@@ -165,9 +170,11 @@ function submitsForm($params)
 
 				if ($wpdb->query($sql)) {
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
-					if (isset($params['student_img'][$i])) {
-						upload_img($params['student_img'][$i], $wpdb->insert_id);
+
+					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0 ) {
+						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
 					}
+
 				} else {
 					$error = 3;
 				}
@@ -200,8 +207,9 @@ function submitsForm($params)
 
 					if ($wpdb->query($sql)) {
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
-						if (isset($params['coach_img'][$i])) {
-							upload_img($params['coach_img'][$i], $wpdb->insert_id);
+						
+						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
 						}
 					} else {
 						$error = 4;
@@ -224,8 +232,9 @@ function submitsForm($params)
 				";
 
 					$arr_insert_id['teacher'][$i] = $teacher_reg_chk[$i]['ID'];
-					if (isset($params['coach_img'][$i])) {
-						upload_img($params['coach_img'][$i], $teacher_reg_chk[$i]['ID']);
+					
+					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+						upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID']);
 					}
 
 					if ($wpdb->query($sql)) {
@@ -251,8 +260,9 @@ function submitsForm($params)
 
 					if ($wpdb->query($sql)) {
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
-						if (isset($params['coach_img'][$i])) {
-							upload_img($params['coach_img'][$i], $wpdb->insert_id);
+						
+						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0 ) {
+							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
 						}
 					} else {
 						$error = 6;
@@ -263,56 +273,65 @@ function submitsForm($params)
 	}
 
 	//print_r($arr_insert_id);
-
+	/*
 	if ($error) {
 		//wp_redirect($params['base_page'] . '?error=1');
 	} else {
 		//wp_redirect($params['base_page'] . '?success=1');
 	}
+	*/
+
+
+	wp_redirect($params['base_page'] . '?success=1');
+	exit;
 }
 
 
-function upload_img($image, $id)
+function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 {
-	$uploadDirectory = "/img-upload/";
 
-	$errors = []; // Store errors here
+	$uploadDirectory = "/var/www/html/wordpress/img-upload/";
+
+	$upload_errors = []; // Store errors here
 
 	$fileExtensionsAllowed = ['jpeg', 'jpg', 'png']; // These will be the only file extensions allowed 
 
-	$fileName =  $id; //$image['name'];
+	/*
+	$fileName =  $image['name'];
 	$fileSize = $image['size'];
 	$fileTmpName  = $image['tmp_name'];
 	$fileType = $image['type'];
+	*/
+
+	
 	$fileExtension = strtolower(end(explode('.', $fileName)));
 
-	$uploadPath = $uploadDirectory . basename($fileName);
 
-	echo 'aaa';
-	/*
-	if (isset($_POST['submit'])) {
+	$uploadPath = $uploadDirectory . basename($id) . '.' . $fileExtension;
 
-		if (!in_array($fileExtension, $fileExtensionsAllowed)) {
-			$errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
-		}
+	echo "<br/>". $uploadPath;
 
-		if ($fileSize > 1000000) {
-			$errors[] = "File exceeds maximum size (1MB)";
-		}
+	if (!in_array($fileExtension, $fileExtensionsAllowed)) {
+		$upload_errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
+	}
 
-		if (empty($errors)) {
-			$didUpload = move_uploaded_file($fileTmpName, $uploadPath);
+	if ($fileSize > 1000000) {
+		$upload_errors[] = "File exceeds maximum size (1MB)";
+	}
 
-			if ($didUpload) {
-				echo "The file " . basename($fileName) . " has been uploaded";
-			} else {
-				echo "An error occurred. Please contact the administrator.";
-			}
+	if (empty($upload_errors)) {
+		$didUpload = copy($fileTmpName, $uploadPath);
+
+		if ($didUpload) {
+			echo "The file " . basename($fileName) . " has been uploaded";
 		} else {
-			foreach ($errors as $error) {
-				echo $error . "These are the errors" . "\n";
-			}
+			echo "An error occurred. Please contact the administrator.";
+		}
+	} else {
+		foreach ($upload_errors as $error) {
+			echo $error . "These are the upload_errors" . "<br/>\n";
 		}
 	}
-*/
+
+	
 }

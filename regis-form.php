@@ -6,11 +6,13 @@
 
 get_header();
 
+global $wpdb;
+
 ?>
 
 <?php if (isset($_GET['success'])) : ?>
-    <div class="alert alert-success">
-        <h3>Congrats! Your Form Submitted Successfully.</h3>
+    <div class="alert alert-success text-center">
+        <div class="h3">บันทึกข้อมูลเรียบร้อยแล้ว</div>
     </div>
 <?php endif; ?>
 
@@ -27,8 +29,6 @@ get_header();
     $output = "";
 
     if ($_GET['sID'] && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
-
-        global $wpdb;
 
         $sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
         $wp_schools = $wpdb->get_results($sql, ARRAY_A);
@@ -137,7 +137,7 @@ if ($wp_groupsara[0]['class_id'] != "11") {
             <input type="hidden" id="class_id" name="class_id" value="' . $wp_groupsara[0]['class_id'] . '">
 
             <input type="hidden" name="action" value="contact_form">
-            <input type="hidden" name="base_page" value="/' . home_url($wp->request) . '">
+            <input type="hidden" name="base_page" value="' . get_permalink( get_queried_object_id() ) . '">
 
             <button type="submit" class="btn btn-primary mb-3">บันทึกข้อมูล</button>
         </div>
