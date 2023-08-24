@@ -143,13 +143,14 @@ get_header();
 
 							if ($result_activity[0]['student_no']) {
 
-								$sql = "SELECT COUNT(id) as cid FROM `wp_studentreg` WHERE groupsara_id = '{$result_activity[0]['ID']}' ";
-								$result_count_student = $wpdb->get_results($sql, ARRAY_A);
+								$sql = "SELECT COUNT(DISTINCT(school_id)) as school_count FROM `wp_studentreg` WHERE groupsara_id = '{$result_activity[0]['ID']}' ";
+								$school_id_count = $wpdb->get_results($sql, ARRAY_A);
 
-								$sql = "SELECT COUNT(id) as cid FROM `wp_teacherreg` WHERE groupsara_id = '{$result_activity[0]['ID']}' ";
-								$result_count_teacher = $wpdb->get_results($sql, ARRAY_A);
-
-								echo '<td class="text-center">' . $result_count_student[0]['cid'] . '</td>';
+								if ($school_id_count[0]['school_count']) {
+									echo '<td class="text-center">' . $school_id_count[0]['school_count'] . ' โรง</td>';
+								} else {
+									echo '<td class="text-center">-</td>';
+								}
 							} else {
 								echo '<td class="bg-secondary">&nbsp;</td>';
 							}
