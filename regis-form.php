@@ -50,7 +50,7 @@ $domain = 'http://127.0.0.1/wordpress/';
             }
 
             if ($error_delete ==  0) {
-                echo '<div class="h3">ยกเลิกการสมัคร ' . $wp_groupsara[0]['activity_name'] . ' เรียบร้อยแล้ว</div>';
+                echo '<div class="h3">ยกเลิกการสมัคร ' . $wp_groupsara[0]['activity_name'] . ' ' . $wp_groupsara[0]['class_name'] . ' เรียบร้อยแล้ว</div>';
             }
 
         }
