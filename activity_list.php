@@ -128,8 +128,8 @@ get_header();
 
 								if (empty($result_count_student[0]['cid']) && empty($result_count_teacher[0]['cid'])) {
 									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ไม่ได้ส่ง</a></td>';
-								} else if ($result_count_student[0]['cid'] == $result_activity[0]['student_no'] && $result_count_teacher[0]['cid'] == $result_activity[0]['teacher_no']) {
-									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งแล้ว</a></td>';
+								} else if ($result_count_student[0]['cid'] >= $result_activity[0]['student_no_min'] && $result_count_teacher[0]['cid'] > 0) {
+									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งครบแล้ว</a></td>';
 								} else {
 									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
 								}
@@ -161,7 +161,11 @@ get_header();
 						} else if ($result_activity[0]['student_no'] == 2) {
 							$txt_activity_type = "คู่";
 						} else if ($result_activity[0]['student_no'] >= 3) {
-							$txt_activity_type = "ทีม " . $result_activity[0]['student_no'] . " คน";
+							if ($result_activity[0]['student_no'] == $result_activity[0]['student_no_min']) {
+								$txt_activity_type = "ทีม " . $result_activity[0]['student_no'] . " คน";
+							} else {
+								$txt_activity_type = "ทีม " . $result_activity[0]['student_no_min'] . "-" . $result_activity[0]['student_no'] . " คน";
+							}
 						}
 					}
 
