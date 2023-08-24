@@ -63,6 +63,59 @@ function simple_user_info()
 }
 add_shortcode('shortcode_userInfo', 'simple_user_info');
 
+// owner school register activity list
+function owner_regis_activity_list()
+{
+	global $wpdb;
+	$current_user = wp_get_current_user();
+
+	// group status
+	$arr_group_status = [
+		"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
+		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+	];
+	$tmp_group_status = "";
+	$tmp_group_id = "";
+
+	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
+
+	$output = '<div class="fs-3 mb-1">รายการสมัครแข่งขันของ ' . $wp_schools[0]['school_name'] . '</div>';
+
+	if (is_user_logged_in()) {
+
+		$sql = "SELECT * FROM wp_groupsara a
+				INNER JOIN (SELECT COUNT(ID) AS count_student, groupsara_id FROM wp_studentreg 
+				WHERE school_id = '{$current_user->user_login}' GROUP BY groupsara_id) b 
+				ON a.ID = b.groupsara_id  
+				ORDER BY a.group_status, a.group_id ASC ";
+		$results = $wpdb->get_results($sql, ARRAY_A);
+		foreach ($results as $key => $value) {
+			if ($value['group_status'] != $tmp_group_status) {
+				$tmp_group_status = $value['group_status'];
+				$output .= '<div class="fs-6 mt-2"><strong>' . $arr_group_status[$tmp_group_status]['name'] . " (" . $arr_group_status[$tmp_group_status]['short_name'] . ")</strong></div>";
+			}
+			if ($value['group_id'] != $tmp_group_id) {
+				$tmp_group_id = $value['group_id'];
+				$output .= '<div class="fs-6 ms-3"><strong>กลุ่มสาระการเรียนรู้ : ' . $value['group_name'] . "</strong></div>";
+			}
+			if ($value['count_student'] >= $value['student_no_min']) {
+				$txt = '(ส่งครบ)';
+				$css_coler = "text-success";
+			} else {
+				$student_not_enough = $value['student_no_min'] - $value['count_student'];
+				$css_coler = "text-danger";
+				$txt = ' (ขาด ' . $student_not_enough . ' คน)';
+			}
+			$output .= '<div class="ms-5 ' . $css_coler . ' ">' . $value['activity_name'] . ' ' . $value['class_name'] . " " . $txt . "</div>";
+		}
+	}
+
+	return $output;
+}
+add_shortcode('shortcode_ownerRegisActivityList', 'owner_regis_activity_list');
+
 // form regis
 //add_action( 'admin_post_nopriv_contact_form', 'process_contact_form' );
 
