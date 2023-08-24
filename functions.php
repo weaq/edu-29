@@ -22,6 +22,26 @@ function my_theme_enqueue_styles()
 // Custom Function to Include
 */
 
+// remove data from db
+function custom_js_remove_record()
+{
+	$sID = $_GET['sID'];
+	$url = "?sID=" . $sID . "&rm=1";
+?>
+	<script>
+		function js_remove_record() {
+			let text = "คุณแน่ใจหรือว่าต้องการ ลบข้อมูลการลงทะเบียน ?";
+			if (confirm(text) == true) {
+				window.location = '<?php echo $url; ?>'
+			} else {
+				text = "You canceled!";
+			}
+		}
+	</script>
+<?php
+}
+add_action('wp_head', 'custom_js_remove_record');
+
 // is login and show user data
 function simple_user_info()
 {
@@ -127,7 +147,10 @@ function submitsForm($params)
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
-						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
+						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
+						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img");
+						}
 					}
 				} else {
 					$error = 1;
@@ -151,7 +174,10 @@ function submitsForm($params)
 				$arr_insert_id['student'][$i] = $student_reg_chk[$i]['ID'];
 
 				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
-					upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID']);
+					list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
+					if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID'], "student_img");
+					}
 				}
 
 				if ($wpdb->query($sql)) {
@@ -178,7 +204,10 @@ function submitsForm($params)
 					$arr_insert_id['student'][$i] = $wpdb->insert_id;
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
-						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id);
+						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
+						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img");
+						}
 					}
 				} else {
 					$error = 3;
@@ -214,7 +243,10 @@ function submitsForm($params)
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
-							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
+							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
+							if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img");
+							}
 						}
 					} else {
 						$error = 4;
@@ -239,7 +271,10 @@ function submitsForm($params)
 					$arr_insert_id['teacher'][$i] = $teacher_reg_chk[$i]['ID'];
 
 					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
-						upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID']);
+						list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
+						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID'], "coach_img");
+						}
 					}
 
 					if ($wpdb->query($sql)) {
@@ -267,7 +302,10 @@ function submitsForm($params)
 						$arr_insert_id['teacher'][$i] = $wpdb->insert_id;
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
-							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id);
+							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
+							if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
+								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img");
+							}
 						}
 					} else {
 						$error = 6;
@@ -286,21 +324,21 @@ function submitsForm($params)
 	}
 	*/
 
+	echo $params['base_page'];
 
-	wp_redirect($params['base_page'] . '?success=1');
-	exit;
+
+	wp_redirect($params['base_page'] . '?success=1&sID=' . $groupsara_id);
+	//exit;
 }
 
 
-function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
+function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upload)
 {
-
-	//$uploadDirectory = "/var/www/html/wordpress/img-upload/";
-	$uploadDirectory = "/domains/udon-vichakarn.com/public_html/img-upload/";
+	$uploadDirectory = "../img-upload/" . $dir_upload . "/";
 
 	$upload_errors = []; // Store errors here
 
-	$fileExtensionsAllowed = ['jpeg', 'jpg', 'png']; // These will be the only file extensions allowed 
+	$fileExtensionsAllowed = ['jpg']; //['jpeg', 'jpg', 'png']; // These will be the only file extensions allowed 
 
 	/*
 	$fileName =  $image['name'];
@@ -321,12 +359,18 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 		$upload_errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
 	}
 
-	if ($fileSize > 1000000) {
-		$upload_errors[] = "File exceeds maximum size (1MB)";
+	if ($fileSize > 500000) {
+		$upload_errors[] = "File exceeds maximum size (500kB)";
 	}
 
 	if (empty($upload_errors)) {
-		$didUpload = copy($fileTmpName, $uploadPath);
+
+		if (file_exists($uploadPath)) {
+			chmod($uploadPath, 0755); //Change the file permissions if allowed
+			unlink($uploadPath); //remove the file
+		}
+
+		$didUpload = move_uploaded_file($fileTmpName, $uploadPath);
 
 		if ($didUpload) {
 			echo "The file " . basename($fileName) . " has been uploaded";
@@ -335,7 +379,7 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id)
 		}
 	} else {
 		foreach ($upload_errors as $error) {
-			echo $error . "These are the upload_errors" . "<br/>\n";
+			echo $error . "The file " . basename($fileName) . " upload errors" . "<br/>\n";
 		}
 	}
 }
