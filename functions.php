@@ -243,7 +243,7 @@ function submitsForm($params)
 		}
 
 		// insert studentreg
-		for ($i = $i; $i <= ($wp_groupsara[0]['student_no'] - $count_student_reg_chk); $i++) {
+		for ($i = $i; $i < $wp_groupsara[0]['student_no']; $i++) {
 
 			$student_prefix = filter_var($params['student_prefix'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 			$student_firstname = filter_var($params['student_firstname'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -340,7 +340,7 @@ function submitsForm($params)
 			}
 
 			// insert teacherreg
-			for ($i = $i; $i <= ($wp_groupsara[0]['teacher_no'] - $count_teacher_reg_chk); $i++) {
+			for ($i = $i; $i < $wp_groupsara[0]['teacher_no']; $i++) {
 
 				$teacher_prefix = filter_var($params['coach_prefix'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 				$teacher_firstname = filter_var($params['coach_firstname'][$i], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
