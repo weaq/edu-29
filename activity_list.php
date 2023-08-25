@@ -126,12 +126,22 @@ get_header();
 								$sql = "SELECT COUNT(id) as cid FROM `wp_teacherreg` WHERE groupsara_id = '{$result_activity[0]['ID']}' AND school_id = '{$current_user->user_login}' ";
 								$result_count_teacher = $wpdb->get_results($sql, ARRAY_A);
 
-								if (empty($result_count_student[0]['cid']) && empty($result_count_teacher[0]['cid'])) {
-									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-danger">ไม่ได้ส่ง</a></td>';
-								} else if ($result_count_student[0]['cid'] >= $result_activity[0]['student_no_min'] && $result_count_teacher[0]['cid'] > 0) {
-									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-success">ส่งครบแล้ว</a></td>';
+								if ($value['class_id'] == "11") {
+									if (empty($result_count_student[0]['cid'])) {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-danger">ไม่ได้ส่ง</a></td>';
+									} else if ($result_count_student[0]['cid'] >= $result_activity[0]['student_no_min']) {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-success">ส่งครบแล้ว</a></td>';
+									} else {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
+									}
 								} else {
-									echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
+									if (empty($result_count_student[0]['cid']) && empty($result_count_teacher[0]['cid'])) {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-danger">ไม่ได้ส่ง</a></td>';
+									} else if ($result_count_student[0]['cid'] >= $result_activity[0]['student_no_min'] && $result_count_teacher[0]['cid'] > 0) {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '" class="text-success">ส่งครบแล้ว</a></td>';
+									} else {
+										echo '<td class="text-center"><a href="../regis-form/?sID=' . $result_activity[0]['ID'] . '">ส่งไม่ครบ ' . $result_count_student[0]['cid'] . '/' . $result_count_teacher[0]['cid'] . '</a></td>';
+									}
 								}
 							} else {
 								echo '<td class="bg-secondary">&nbsp;</td>';

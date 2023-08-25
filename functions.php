@@ -201,7 +201,7 @@ function submitsForm($params)
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+						if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img", $school_id);
 						}
 					}
@@ -228,7 +228,7 @@ function submitsForm($params)
 
 				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 					list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-					if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+					if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID'], "student_img", $school_id);
 					}
 				}
@@ -258,7 +258,7 @@ function submitsForm($params)
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+						if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img", $school_id);
 						}
 					}
@@ -297,7 +297,7 @@ function submitsForm($params)
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-							if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+							if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img", $school_id);
 							}
 						}
@@ -325,7 +325,7 @@ function submitsForm($params)
 
 					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+						if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID'], "coach_img", $school_id);
 						}
 					}
@@ -356,7 +356,7 @@ function submitsForm($params)
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-							if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+							if ($width >= 200 && $width < 2000 && $height >= 200 && $height < 2000) {
 								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img", $school_id);
 							}
 						}
