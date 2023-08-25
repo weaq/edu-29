@@ -201,8 +201,8 @@ function submitsForm($params)
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img");
+						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img", $school_id);
 						}
 					}
 				} else {
@@ -228,8 +228,8 @@ function submitsForm($params)
 
 				if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 					list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-					if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID'], "student_img");
+					if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+						upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $student_reg_chk[$i]['ID'], "student_img", $school_id);
 					}
 				}
 
@@ -258,8 +258,8 @@ function submitsForm($params)
 
 					if (isset($_FILES['student_img']['tmp_name'][$i]) && $_FILES['student_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['student_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img");
+						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+							upload_img($_FILES['student_img']['name'][$i], $_FILES['student_img']['size'][$i], $_FILES['student_img']['tmp_name'][$i], $_FILES['student_img']['type'][$i], $wpdb->insert_id, "student_img", $school_id);
 						}
 					}
 				} else {
@@ -297,8 +297,8 @@ function submitsForm($params)
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-							if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img");
+							if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img", $school_id);
 							}
 						}
 					} else {
@@ -325,8 +325,8 @@ function submitsForm($params)
 
 					if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 						list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-						if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID'], "coach_img");
+						if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+							upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $teacher_reg_chk[$i]['ID'], "coach_img", $school_id);
 						}
 					}
 
@@ -356,8 +356,8 @@ function submitsForm($params)
 
 						if (isset($_FILES['coach_img']['tmp_name'][$i]) && $_FILES['coach_img']['size'][$i] > 0) {
 							list($width, $height, $type, $attr) = getimagesize($_FILES['coach_img']['tmp_name'][$i]);
-							if ($width >= 250 && $width < 800 && $height >= 250 && $height < 1200) {
-								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img");
+							if ($width >= 250 && $width < 1600 && $height >= 250 && $height < 2000) {
+								upload_img($_FILES['coach_img']['name'][$i], $_FILES['coach_img']['size'][$i], $_FILES['coach_img']['tmp_name'][$i], $_FILES['coach_img']['type'][$i], $wpdb->insert_id, "coach_img", $school_id);
 							}
 						}
 					} else {
@@ -385,13 +385,13 @@ function submitsForm($params)
 }
 
 
-function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upload)
+function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upload, $school_id)
 {
 	$uploadDirectory = "../img-upload/" . $dir_upload . "/";
 
 	$upload_errors = []; // Store errors here
 
-	$fileExtensionsAllowed = ['jpg']; //['jpeg', 'jpg', 'png']; // These will be the only file extensions allowed 
+	$fileExtensionsAllowed = ['jpeg', 'jpg']; //['jpeg', 'jpg', 'png']; // These will be the only file extensions allowed 
 
 	/*
 	$fileName =  $image['name'];
@@ -404,7 +404,7 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upl
 	$fileExtension = strtolower(end(explode('.', $fileName)));
 
 
-	$uploadPath = $uploadDirectory . basename($id) . '.' . $fileExtension;
+	$uploadPath = $uploadDirectory . $school_id . '-' . basename($id) . '.' . $fileExtension;
 
 	echo "<br/>" . $uploadPath;
 
@@ -412,7 +412,7 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upl
 		$upload_errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
 	}
 
-	if ($fileSize > 500000) {
+	if ($fileSize > 1000000) {
 		$upload_errors[] = "File exceeds maximum size (500kB)";
 	}
 
