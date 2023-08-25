@@ -439,3 +439,88 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upl
 		}
 	}
 }
+
+
+
+// //
+// owner school register activity list
+function admin_view_regis_activity_list()
+{
+	global $wpdb;
+	$current_user = wp_get_current_user();
+
+	$output = "";
+	$ii = 1;
+
+	//if (is_user_logged_in() && $current_user->roles[0] == 'contributor' && $current_user->roles[0] == 'administrator') {
+	// group status
+	$arr_group_status = [
+		"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
+		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+	];
+	$tmp_group_status = "";
+	$tmp_group_id = "";
+	$tmp_activity_id = "";
+
+	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
+
+	$sql = "SELECT a.ID AS studentreg_id, a.school_id AS student_school_id, c.school_name, a.groupsara_id AS groupsara_id , 
+				b.group_status, b.group_id, b.group_name, a.activity_id AS activity_id, b.activity_name, a.class_id, 
+				b.class_name, a.student_prefix, a.student_firstname, a.student_lastname , b.student_no_min, b.student_no
+				FROM `wp_studentreg` a 
+				INNER JOIN wp_groupsara b 
+				ON a.groupsara_id = b.ID 
+				INNER JOIN wp_schools c 
+				ON a.school_id = c.school_id
+				ORDER BY `b`.`group_status` , `b`.`group_id` , `a`.`groupsara_id` , a.school_id ASC";
+	$results = $wpdb->get_results($sql, ARRAY_A);
+	foreach ($results as $key => $value) {
+
+		if ($value['student_no'] == 1) {
+			$txt_activity_type = "เดี่ยว";
+		} else if ($value['student_no'] == 2) {
+			$txt_activity_type = "คู่";
+		} else if ($value['student_no'] >= 3) {
+			if ($value['student_no'] == $value['student_no_min']) {
+				$txt_activity_type = "ทีม " . $value['student_no'] . " คน";
+			} else {
+				$txt_activity_type = "ทีม " . $value['student_no_min'] . "-" . $value['student_no'] . " คน";
+			}
+		}
+
+		if ($value['group_status'] != $tmp_group_status) {
+			$tmp_group_status = $value['group_status'];
+			$output .= '<div class="fs-5 mt-3">';
+			$output .= $arr_group_status[$value['group_status']]['name'] . " (" . $arr_group_status[$value['group_status']]['short_name'] . ") ";
+			$output .= '</div>';
+		}
+		if ($value['group_id'] != $tmp_group_id) {
+			$tmp_group_id = $value['group_id'];
+			$output .= '<div class="fs-6 mt-3"><strong> ' . $value['group_name'] . '</strong></div>';
+		}
+		if ($value['activity_id'] != $tmp_activity_id) {
+			$tmp_activity_id = $value['activity_id'];
+			$output .= '<div class="mt-1">' . "&nbsp; &nbsp; &nbsp; &nbsp; \t" . "กิจกรรม " . $value['activity_name'] . " " . $value['class_name'] . " (" . $txt_activity_type . ")" . "</div>";
+			$ii = 1;
+		} else {
+			$ii++;
+		}
+
+
+
+		$output .= "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; \t" . $ii . ". ";
+		$output .= $value['school_name'] . "\t";
+		$output .= $value['student_prefix'] . "\t";
+		$output .= $value['student_firstname'] . "\t";
+		$output .= $value['student_lastname'] . "\t";
+		$output .= "<br>";
+	}
+
+	//}
+
+	return $output;
+}
+
+add_shortcode('shortcode_adminViewRegisActivityList', 'admin_view_regis_activity_list');
