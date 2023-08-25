@@ -404,7 +404,7 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upl
 	$fileExtension = strtolower(end(explode('.', $fileName)));
 
 
-	$uploadPath = $uploadDirectory . $school_id . '-' . basename($id) . '.' . $fileExtension;
+	$uploadPath = $uploadDirectory . basename($id) . '.' . $fileExtension;
 
 	echo "<br/>" . $uploadPath;
 
@@ -412,7 +412,7 @@ function upload_img($fileName, $fileSize, $fileTmpName, $fileType, $id, $dir_upl
 		$upload_errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
 	}
 
-	if ($fileSize > 1000000) {
+	if ($fileSize > 2000000) {
 		$upload_errors[] = "File exceeds maximum size (500kB)";
 	}
 

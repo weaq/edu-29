@@ -8,8 +8,8 @@ get_header();
 
 global $wpdb;
 
-$domain = 'http://127.0.0.1/wordpress/';
-//$domain = '/';
+//$domain = 'http://127.0.0.1/wordpress/';
+$domain = '/';
 ?>
 
 <?php if (isset($_GET['success'])) : ?>
@@ -98,9 +98,9 @@ $domain = 'http://127.0.0.1/wordpress/';
         for ($i = 0; $i < $wp_groupsara[0]['student_no']; $i++) {
             $tmp_num = $i + 1;
 
-            $img_url = './img-upload/student_img/' . $current_user->user_login . '-' . $student_reg_chk[$i]['ID'] . '.jpg';
+            $img_url = './img-upload/student_img/' . $student_reg_chk[$i]['ID'] . '.jpg';
 
-            $img_url = (file_exists($img_url)) ? $domain . 'img-upload/student_img/' . $current_user->user_login . '-' . $student_reg_chk[$i]['ID'] . '.jpg' : $domain . 'img-upload/unknow.jpg';
+            $img_url = (file_exists($img_url)) ? $domain . 'img-upload/student_img/' . $student_reg_chk[$i]['ID'] . '.jpg' : $domain . 'img-upload/unknow.jpg';
 
             $output .= '
             <div class="border px-3 py-3 my-3">
@@ -143,9 +143,9 @@ $domain = 'http://127.0.0.1/wordpress/';
 			';
             for ($i = 0; $i < $wp_groupsara[0]['teacher_no']; $i++) {
                 $tmp_num = $i + 1;
-                $img_url = './img-upload/coach_img/' . $current_user->user_login . '-' . $teacher_reg_chk[$i]['ID'] . '.jpg';
+                $img_url = './img-upload/coach_img/' . $teacher_reg_chk[$i]['ID'] . '.jpg';
 
-                $img_url = (file_exists($img_url)) ? $domain . 'img-upload/coach_img/' . $current_user->user_login . '-' . $teacher_reg_chk[$i]['ID'] . '.jpg' : $domain . 'img-upload/unknow.jpg';
+                $img_url = (file_exists($img_url)) ? $domain . 'img-upload/coach_img/' . $teacher_reg_chk[$i]['ID'] . '.jpg' : $domain . 'img-upload/unknow.jpg';
 
                 $output .= '
             <div class="border px-3 py-3 my-3">
