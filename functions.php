@@ -69,21 +69,22 @@ function owner_regis_activity_list()
 	global $wpdb;
 	$current_user = wp_get_current_user();
 
-	// group status
-	$arr_group_status = [
-		"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-	];
-	$tmp_group_status = "";
-	$tmp_group_id = "";
+	$output = "";
 
-	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
-	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
+	if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
+		// group status
+		$arr_group_status = [
+			"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
+			"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+			"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		];
+		$tmp_group_status = "";
+		$tmp_group_id = "";
 
-	$output = '<div class="fs-3 mb-1">รายการสมัครแข่งขันของ ' . $wp_schools[0]['school_name'] . '</div>';
+		$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+		$wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
-	if (is_user_logged_in()) {
+		$output .= '<div class="fs-3 mb-1">รายการสมัครแข่งขันของ ' . $wp_schools[0]['school_name'] . '</div>';
 
 		$sql = "SELECT * FROM wp_groupsara a
 				INNER JOIN (SELECT COUNT(ID) AS count_student, groupsara_id FROM wp_studentreg 
