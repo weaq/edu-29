@@ -163,10 +163,12 @@ function submitsForm($params)
 	$wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
 
 	$student_count = count($params['student_firstname']);
-	$teacher_count = count($params['coach_firstname']);
-
 	$student_count = ($wp_groupsara[0]['student_no'] > $student_count) ? $student_count : $wp_groupsara[0]['student_no'];
-	$teacher_count = ($wp_groupsara[0]['teacher_no'] > $teacher_count) ? $teacher_count : $wp_groupsara[0]['teacher_no'];
+
+	if ($wp_groupsara[0]['class_id'] != "11") {
+		$teacher_count = count($params['coach_firstname']);
+		$teacher_count = ($wp_groupsara[0]['teacher_no'] > $teacher_count) ? $teacher_count : $wp_groupsara[0]['teacher_no'];
+	}
 
 
 	// studentreg 
@@ -377,7 +379,7 @@ function submitsForm($params)
 	}
 	*/
 
-	echo $params['base_page'];
+	//echo $params['base_page'];
 
 
 	wp_redirect($params['base_page'] . '?success=1&sID=' . $groupsara_id);

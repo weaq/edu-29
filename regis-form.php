@@ -8,8 +8,8 @@ get_header();
 
 global $wpdb;
 
-$domain = 'http://127.0.0.1/wordpress/';
-//$domain = '/';
+//$domain = 'http://127.0.0.1/wordpress/';
+$domain = '/';
 ?>
 
 <?php if (isset($_GET['success'])) : ?>
