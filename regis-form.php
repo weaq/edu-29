@@ -52,7 +52,6 @@ $domain = '/';
             if ($error_delete ==  0) {
                 echo '<div class="h3">ยกเลิกการสมัคร ' . $wp_groupsara[0]['activity_name'] . ' ' . $wp_groupsara[0]['class_name'] . ' เรียบร้อยแล้ว</div>';
             }
-
         }
         ?>
 
@@ -86,6 +85,8 @@ $domain = '/';
             "22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
         ];
 
+        $tmp_col = ($wp_groupsara[0]['class_id'] == "11") ? "col-md-3" : "col-md-4";
+
         $output = '
 		<div class="container my-3">
             <div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>
@@ -108,18 +109,30 @@ $domain = '/';
                 <div class="row">
                 <div class="col-md-10">
                     <div class="row">
-                        <div class="mt-2 col-md-4">
+                        <div class="mt-2 ' . $tmp_col . '">
                             <label class="form-label">คำนำหน้า</label>
                             <input type="text" class="form-control" id="student_prefix[' . $i . ']" name="student_prefix[' . $i . ']" value="' . $student_reg_chk[$i]['student_prefix'] . '" >
                         </div>
-                        <div class="mt-2 col-md-4">
+                        <div class="mt-2 ' . $tmp_col . '">
                             <label class="form-label">ชื่อ</label>
                             <input type="text" class="form-control" id="student_firstname[' . $i . ']" name="student_firstname[' . $i . ']" value="' . $student_reg_chk[$i]['student_firstname'] . '" >
                         </div>
-                        <div class="mt-2 col-md-4">
+                        <div class="mt-2 ' . $tmp_col . '">
                             <label class="form-label">สกุล</label>
                             <input type="text" class="form-control" id="student_lastname[' . $i . ']" name="student_lastname[' . $i . ']" value="' . $student_reg_chk[$i]['student_lastname'] . '" >
                         </div>
+                        ';
+
+            if ($wp_groupsara[0]['class_id'] == "11") {
+                $output .= '
+                        <div class="mt-2 col-md-3">
+                            <label class="form-label">หมายเลขโทรศัพท์</label>
+                            <input type="text" class="form-control" id="student_tel[' . $i . ']" name="student_tel[' . $i . ']" value="' . $student_reg_chk[$i]['tel'] . '" >
+                        </div>
+                ';
+            }
+
+            $output .= '
                     </div>
                     <div class="row">
                         <div class="input-group mt-2">
