@@ -535,17 +535,22 @@ function process_score_form()
 {
 	$current_user = wp_get_current_user();
 
-	//print_r($_POST);
-
-	//if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
-	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in()) {
-
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 
 		global $wpdb;
 
 		$params = $_POST;
 
-		submitsScoreForm($params);
+		$sql = "SELECT a.* FROM wp_groupsara a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+            WHERE a.ID = {$params['groupsara_id']} AND b.school_id = '{$current_user->user_login}' ";
+		$wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
+
+		if (count($wp_groupsara) > 0) {
+
+			submitsScoreForm($params);
+		}
+
+
 
 		die;
 	}

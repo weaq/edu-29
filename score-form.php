@@ -21,8 +21,28 @@ get_header();
 <?php endif; ?>
 
 <?php
+
 if (isset($_GET['sID'])) {
     $sID = $_GET['sID'];
+
+
+    $current_user = wp_get_current_user();
+
+    global $wpdb;
+
+    // group status
+    $arr_group_status = [
+        "1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
+        "21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+        "22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+    ];
+
+    $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+            WHERE a.ID = {$sID} AND b.school_id = '{$current_user->user_login}' ";
+    $wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
+
+    if (count($wp_groupsara) > 0) {
+
 ?>
 
     <div class="container mt-3 mb-5">
@@ -31,19 +51,6 @@ if (isset($_GET['sID'])) {
 
                 <?php
 
-                $current_user = wp_get_current_user();
-
-                global $wpdb;
-
-                // group status
-                $arr_group_status = [
-                    "1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-                    "21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-                    "22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-                ];
-
-                $sql = "SELECT * FROM wp_groupsara WHERE ID = {$sID} ";
-                $wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
                 echo '<div class="text-center h3 my-3">';
                 echo '<div>' . $arr_group_status[$wp_groupsara[0]['group_status']]['name'] . ' (' .  $arr_group_status[$wp_groupsara[0]['group_status']]['short_name'] . ')</div>';
                 echo '<div>' . $wp_groupsara[0]['group_name'] . '</div>';
@@ -88,6 +95,7 @@ if (isset($_GET['sID'])) {
     </div>
 
 <?php
+    }
 }
 ?>
 
