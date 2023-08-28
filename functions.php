@@ -466,18 +466,15 @@ function admin_view_regis_activity_list()
 	$tmp_group_id = "";
 	$tmp_activity_id = "";
 
-	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
-	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
-
 	$sql = "SELECT a.ID AS studentreg_id, a.school_id AS student_school_id, c.school_name, a.groupsara_id AS groupsara_id , 
 				b.group_status, b.group_id, b.group_name, a.activity_id AS activity_id, b.activity_name, a.class_id, 
 				b.class_name, a.student_prefix, a.student_firstname, a.student_lastname , b.student_no_min, b.student_no
-				FROM `wp_studentreg` a 
+				FROM wp_studentreg a 
 				INNER JOIN wp_groupsara b 
 				ON a.groupsara_id = b.ID 
 				INNER JOIN wp_schools c 
 				ON a.school_id = c.school_id
-				ORDER BY `b`.`group_status` , `b`.`group_id` , `a`.`groupsara_id` , a.school_id ASC";
+				ORDER BY b.group_status , b.group_id , a.groupsara_id , a.school_id ASC";
 	$results = $wpdb->get_results($sql, ARRAY_A);
 	foreach ($results as $key => $value) {
 
@@ -527,3 +524,64 @@ function admin_view_regis_activity_list()
 }
 
 add_shortcode('shortcode_adminViewRegisActivityList', 'admin_view_regis_activity_list');
+
+
+// form score
+//add_action( 'admin_post_score_form', 'process_score_form' );
+
+add_action('admin_post_score_form', 'process_score_form');
+
+function process_score_form()
+{
+	$current_user = wp_get_current_user();
+
+	//print_r($_POST);
+
+	//if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in()) {
+
+
+		global $wpdb;
+
+		$params = $_POST;
+
+		submitsScoreForm($params);
+
+		die;
+	}
+}
+
+function submitsScoreForm($params)
+{
+
+	global $wpdb;
+
+	$current_user = wp_get_current_user();
+
+	// sort value DESC
+	arsort($params['score']);
+
+	$i = 1;
+	foreach ($params['score'] as $key => $value) {
+
+		$sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$params['groupsara_id']}' AND school_id = '{$key}'";
+		$result_school_score = $wpdb->get_results($sql, ARRAY_A);
+
+		if (COUNT($result_school_score) == 0) {
+			$sql = "INSERT INTO wp_school_score (id, groupsara_id, school_id, score, ranking) 
+				VALUES (NULL, '{$params['groupsara_id']}', '{$key}', '{$value}', '{$i}')
+				";
+			$wpdb->query($sql);
+		} else {
+			$sql = "UPDATE wp_school_score SET score = '{$value}' , ranking = '{$i}' WHERE wp_school_score.id = '{$result_school_score[0]['id']}' ";
+			$wpdb->query($sql);
+		}
+
+		$i++;
+	}
+
+	wp_redirect($params['base_page'] . '?success=1&sID=' . $params['groupsara_id']);
+	//exit;
+}
+
+// shortcode show score
