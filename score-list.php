@@ -137,7 +137,7 @@ get_header();
                                     if (empty($result_school_score[0]['id'])) {
                                         echo '<td class="text-center">';
                                         if (count($chk_permision) > 0) {
-                                            echo '<a href="../score-form/?sID=' . $result_activity[0]['ID'] . '">';
+                                            echo '<a href="../score-form/?sID=' . $result_activity[0]['ID'] . '" target="_blank" >';
                                         }
                                         echo 'รอผล';
                                         if (count($chk_permision) > 0) {
@@ -146,9 +146,9 @@ get_header();
                                         echo '</td>';
                                     } else {
                                         echo '<td class="text-center">';
-                                        echo '<a href="../score-activity/?sID=' . $result_activity[0]['ID'] . '">ผลการประกวด</a>';
+                                        echo '<a href="../score-activity/?sID=' . $result_activity[0]['ID'] . '" target="_blank" >ผลการประกวด</a>';
                                         if (count($chk_permision) > 0) {
-                                            echo '&nbsp; &nbsp; <a href="../score-form/?sID=' . $result_activity[0]['ID'] . '">แก้ไข</a>';
+                                            echo '&nbsp; &nbsp; <a href="../score-form/?sID=' . $result_activity[0]['ID'] . '" target="_blank" >แก้ไข</a>';
                                         }
                                         echo '</td>';
                                     }
