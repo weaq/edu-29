@@ -49,8 +49,10 @@ if (isset($_GET['sID'])) {
         $wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
 ?>
-
+        
         <div class="container mt-3 mb-5">
+            
+        <div class="text-end"><a href="../export-data/export-competition.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด</a></div>
             <form name="contact_form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" autocomplete="on" accept-charset="utf-8">
                 <div class="row">
 
@@ -62,6 +64,7 @@ if (isset($_GET['sID'])) {
                     echo '<div>รายการแข่งขัน ' . $wp_groupsara[0]['activity_name'] .  '</div>';
                     echo '<div>ระดับการแข่งขัน ' . $wp_groupsara[0]['class_name'] .  '</div>';
                     echo '</div>';
+
 
                     if (count($wp_schools) > 0) {
                         foreach ($wp_schools as $key => $value) {
