@@ -32,9 +32,9 @@ if (isset($_GET['sID'])) {
 
     // group status
     $arr_group_status = [
-        "1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-        "21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-        "22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+        "1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+        "21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+        "22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
     ];
 
     $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 

@@ -74,9 +74,9 @@ function owner_regis_activity_list()
 	if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 		// group status
 		$arr_group_status = [
-			"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-			"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-			"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+			"1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+			"21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+			"22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 		];
 		$tmp_group_status = "";
 		$tmp_group_id = "";
@@ -458,9 +458,9 @@ function admin_view_regis_activity_list()
 	//if (is_user_logged_in() && $current_user->roles[0] == 'contributor' && $current_user->roles[0] == 'administrator') {
 	// group status
 	$arr_group_status = [
-		"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+		"21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 	];
 	$tmp_group_status = "";
 	$tmp_group_id = "";
