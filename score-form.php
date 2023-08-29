@@ -20,6 +20,40 @@ get_header();
     </div>
 <?php endif; ?>
 
+<?php if (isset($_GET['rm'])) : ?>
+    <div class="alert alert-success text-center">
+
+        <?php
+        if ($_GET['sID'] && is_user_logged_in() && $current_user->roles[0] == 'contributor' && isset($_GET['rm'])) {
+
+            $error_delete = 1;
+
+            $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+            WHERE a.ID = {$_GET['sID']} AND b.school_id = '{$current_user->user_login}' ";
+            $wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
+
+            if (count($wp_groupsara) > 0) {
+
+
+
+                $sql = "DELETE FROM wp_school_score WHERE groupsara_id = {$_GET['sID']}";
+                if ($wpdb->query($sql)) {
+                    $error_delete = 0;
+                } else {
+                    $error_delete = 1;
+                }
+
+
+                if ($error_delete ==  0) {
+                    echo '<div class="h3">ยกเลิกการสมัคร ' . $wp_groupsara[0]['activity_name'] . ' ' . $wp_groupsara[0]['class_name'] . ' เรียบร้อยแล้ว</div>';
+                }
+            }
+        }
+        ?>
+
+    </div>
+<?php endif; ?>
+
 <?php
 
 if (isset($_GET['sID'])) {
@@ -49,10 +83,12 @@ if (isset($_GET['sID'])) {
         $wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
 ?>
-        
+
         <div class="container mt-3 mb-5">
-            
-        <div class="text-end"><a href="../export-data/export-competition.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด</a></div>
+            <div class="text-end">
+                <span class="me-5"><a href="../export-data/export-form-regis.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ใบลงทะเบียน</a></span>
+                <span><a href="../export-data/export-competition.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด</a></span>
+            </div>
             <form name="contact_form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" autocomplete="on" accept-charset="utf-8">
                 <div class="row">
 
@@ -92,10 +128,14 @@ if (isset($_GET['sID'])) {
                     <input type="hidden" name="base_page" value="<?php echo get_permalink(get_queried_object_id()); ?>">
 
                     <div class="row">
-                        <div class="col-md-12 text-center">
+                        <div class="col-md-6 text-center">
+                            <div class="btn btn-warning mx-3 my-3" onclick="js_remove_record()">ลบข้อมูล</div>
+                        </div>
+                        <div class="col-md-6 text-center">
                             <button type="submit" class="btn btn-primary mx-3 my-3">บันทึกข้อมูล</button>
                         </div>
                     </div>
+
                 <?php
                     } else {
                         echo '<div class="text-center h4 my-5">ไม่มีผู้แข่งขัน</div>';

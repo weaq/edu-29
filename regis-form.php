@@ -213,11 +213,11 @@ $domain = '/';
             <input type="hidden" name="base_page" value="' . get_permalink(get_queried_object_id()) . '">
 
             <div class="row">
-            <div class="col-md-6 text-center">
-                <div class="btn btn-warning mx-3 my-3" onclick="js_remove_record()">ยกเลิกการลงทะเบียน</div>
+                <div class="col-md-6 text-center">
+                    <div class="btn btn-warning mx-3 my-3" onclick="js_remove_record()">ยกเลิกการลงทะเบียน</div>
                 </div>
                 <div class="col-md-6 text-center">
-                <button type="submit" class="btn btn-primary mx-3 my-3">บันทึกข้อมูล</button>
+                    <button type="submit" class="btn btn-primary mx-3 my-3">บันทึกข้อมูล</button>
                 </div>
             </div>
         </div>

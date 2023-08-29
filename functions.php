@@ -30,11 +30,11 @@ function custom_js_remove_record()
 ?>
 	<script>
 		function js_remove_record() {
-			let text = "คุณแน่ใจหรือว่าต้องการ ลบข้อมูลการลงทะเบียน ?";
+			let text = "คุณแน่ใจหรือว่าต้องการ ลบข้อมูล ?";
 			if (confirm(text) == true) {
 				window.location = '<?php echo $url; ?>'
 			} else {
-				text = "You canceled!";
+				text = "ยกเลิกการลบข้อมูล";
 			}
 		}
 	</script>
@@ -578,7 +578,10 @@ function submitsScoreForm($params)
 				";
 			$wpdb->query($sql);
 		} else {
-			$sql = "UPDATE wp_school_score SET score = '{$value}' , ranking = '{$i}' WHERE wp_school_score.id = '{$result_school_score[0]['id']}' ";
+			$tmp_ranking = ($value == 0) ? NULL : $i;
+			$sql = "UPDATE wp_school_score 
+					SET score = '{$value}' , ranking = '{$i}' 
+					WHERE wp_school_score.id = '{$result_school_score[0]['id']}' ";
 			$wpdb->query($sql);
 		}
 
