@@ -43,59 +43,70 @@ if (isset($_GET['sID'])) {
 
     if (count($wp_groupsara) > 0) {
 
-?>
-
-    <div class="container mt-3 mb-5">
-        <form name="contact_form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" autocomplete="on" accept-charset="utf-8">
-            <div class="row">
-
-                <?php
-
-                echo '<div class="text-center h3 my-3">';
-                echo '<div>' . $arr_group_status[$wp_groupsara[0]['group_status']]['name'] . ' (' .  $arr_group_status[$wp_groupsara[0]['group_status']]['short_name'] . ')</div>';
-                echo '<div>' . $wp_groupsara[0]['group_name'] . '</div>';
-                echo '<div>' . $wp_groupsara[0]['activity_name'] . ' ' . $wp_groupsara[0]['class_name'] . '</div>';
-                echo '</div>';
-
-                $sql = "SELECT * FROM wp_schools a 
+        $sql = "SELECT * FROM wp_schools a 
                         INNER JOIN (SELECT DISTINCT(school_id) AS school_id FROM wp_studentreg WHERE groupsara_id = {$sID}) b 
                         ON a.school_id = b.school_id ORDER BY a.ID ASC";
-                $wp_schools = $wpdb->get_results($sql, ARRAY_A);
+        $wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
-                foreach ($wp_schools as $key => $value) {
+?>
 
-                    $sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$sID}' AND school_id = '{$value['school_id']}' ";
-                    $result_school_score = $wpdb->get_results($sql, ARRAY_A);
-
-                    echo '<div class="row">';
-                    echo '<div class="col-6 text-end">';
-                    echo '<div class="h5">' . $value['school_name'] . '</div>';
-                    echo '</div>';
-                    echo '<div class="col-6 text-start">';
-                    echo '<input type="number" class="form-control" id="score[' . $value['school_id'] . ']" name="score[' . $value['school_id'] . ']" value="' . $result_school_score[0]['score'] . '" min="0" max="100" step=".01" placeholder="คะแนนที่ได้" >';
-                    echo '</div>';
-                    echo '</div>';
-                }
-
-                ?>
-
-            </div>
-            <div class="mt-3 mb-3 text-center">
-                <input type="hidden" id="groupsara_id" name="groupsara_id" value="<?php echo $_GET['sID']; ?>">
-
-                <input type="hidden" name="action" value="score_form">
-                <input type="hidden" name="base_page" value="<?php echo get_permalink(get_queried_object_id()); ?>">
-
+        <div class="container mt-3 mb-5">
+            <form name="contact_form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" autocomplete="on" accept-charset="utf-8">
                 <div class="row">
-                    <div class="col-md-12 text-center">
-                        <button type="submit" class="btn btn-primary mx-3 my-3">บันทึกข้อมูล</button>
-                    </div>
+
+                    <?php
+
+                    echo '<div class="text-center h5 my-3">';
+                    echo '<div>กรอกผลคะแนน' . $arr_group_status[$wp_groupsara[0]['group_status']]['name'] . '</div>';
+                    echo '<div>กลุ่มสาระการเรียนรู้ ' . $wp_groupsara[0]['group_name'] . ' ตามหลักเกณฑ์ ' . $arr_group_status[$wp_groupsara[0]['group_status']]['short_name'] .  '</div>';
+                    echo '<div>รายการแข่งขัน ' . $wp_groupsara[0]['activity_name'] .  '</div>';
+                    echo '<div>ระดับการแข่งขัน ' . $wp_groupsara[0]['class_name'] .  '</div>';
+                    echo '</div>';
+
+                    if (count($wp_schools) > 0) {
+                        foreach ($wp_schools as $key => $value) {
+
+                            $sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$sID}' AND school_id = '{$value['school_id']}' ";
+                            $result_school_score = $wpdb->get_results($sql, ARRAY_A);
+
+                            echo '<div class="row">';
+                            echo '<div class="col-6 text-end">';
+                            echo '<div class="h5">' . $value['school_name'] . '</div>';
+                            echo '</div>';
+                            echo '<div class="col-6 text-start">';
+                            echo '<input type="number" class="form-control" id="score[' . $value['school_id'] . ']" name="score[' . $value['school_id'] . ']" value="' . $result_school_score[0]['score'] . '" min="0" max="100" step=".01" placeholder="คะแนนที่ได้" >';
+                            echo '</div>';
+                            echo '</div>';
+                        }
+
+                    ?>
+
                 </div>
-        </form>
-    </div>
+                <div class="mt-3 mb-3 text-center">
+                    <input type="hidden" id="groupsara_id" name="groupsara_id" value="<?php echo $_GET['sID']; ?>">
+
+                    <input type="hidden" name="action" value="score_form">
+                    <input type="hidden" name="base_page" value="<?php echo get_permalink(get_queried_object_id()); ?>">
+
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-primary mx-3 my-3">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                <?php
+                    } else {
+                        echo '<div class="text-center h4 my-5">ไม่มีผู้แข่งขัน</div>';
+                    }
+                ?>
+            </form>
+        </div>
 
 <?php
+    } else {
+        echo '<div class="text-center h5">ไม่ได้รับอนุญาตในการใช้งาน</div>';
     }
+} else {
+    echo '<div class="text-center h5">ไม่พบข้อมูล</div>';
 }
 ?>
 

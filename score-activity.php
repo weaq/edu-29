@@ -84,7 +84,7 @@ get_header();
                     } else if ($value['ranking'] == 3) {
                         $ranking_txt = "รองชนะเลิศ อันดับ 2";
                     } else {
-                        $ranking_txt = "อันดับ " . $value['ranking'];
+                        $ranking_txt = "รางวัลชมเชย";
                     }
 
                     echo '<tr>';

@@ -22,12 +22,17 @@ get_header();
         "22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
     ];
 
+
+    $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+            WHERE a.group_id = {$_GET['group_id']} AND b.school_id = '{$current_user->user_login}' ";
+    $chk_permision = $wpdb->get_results($sql, ARRAY_A);
+
     echo '<div class="h4">ผลการประกวดแข่งขัน</div>';
 
     $sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
     $wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
-    echo '<div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>';
+    //echo '<div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>';
 
     echo '<div class="row">';
     echo '<div class="col-md-4">';
@@ -115,25 +120,45 @@ get_header();
 
                     foreach ($arr_class as $value) {
 
-                        if (is_user_logged_in() && ($current_user->roles[0] == 'administrator' || $current_user->roles[0] == 'contributor')) {
-
                             $sql = "SELECT * FROM wp_groupsara WHERE activity_name LIKE '%{$row['activity_name']}%' AND class_id = '{$value['class_id']}' AND group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' ";
                             $result_activity = $wpdb->get_results($sql, ARRAY_A);
 
                             if ($result_activity[0]['student_no']) {
 
-                                $sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$result_activity[0]['ID']}'";
-                                $result_school_score = $wpdb->get_results($sql, ARRAY_A);
 
-                                if (empty($result_school_score[0]['id'])) {
-                                    echo '<td class="text-center">รอผล</td>';
+                                $sql = "SELECT COUNT(DISTINCT(school_id)) as school_count FROM `wp_studentreg` WHERE groupsara_id = '{$result_activity[0]['ID']}' ";
+                                $school_id_count = $wpdb->get_results($sql, ARRAY_A);
+
+                                if ($school_id_count[0]['school_count']) {
+
+                                    $sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$result_activity[0]['ID']}'";
+                                    $result_school_score = $wpdb->get_results($sql, ARRAY_A);
+
+                                    if (empty($result_school_score[0]['id'])) {
+                                        echo '<td class="text-center">';
+                                        if (count($chk_permision) > 0) {
+                                            echo '<a href="../score-form/?sID=' . $result_activity[0]['ID'] . '">';
+                                        }
+                                        echo 'รอผล';
+                                        if (count($chk_permision) > 0) {
+                                            echo '</a>';
+                                        }
+                                        echo '</td>';
+                                    } else {
+                                        echo '<td class="text-center">';
+                                        echo '<a href="../score-activity/?sID=' . $result_activity[0]['ID'] . '">ผลการประกวด</a>';
+                                        if (count($chk_permision) > 0) {
+                                            echo '&nbsp; &nbsp; <a href="../score-form/?sID=' . $result_activity[0]['ID'] . '">แก้ไข</a>';
+                                        }
+                                        echo '</td>';
+                                    }
                                 } else {
-                                    echo '<td class="text-center"><a href="../score-activity/?sID=' . $result_activity[0]['ID'] . '">ผลการประกวด</a></td>';
+                                    echo '<td class="text-center">ไม่มีผู้สมัคร</td>';
                                 }
                             } else {
                                 echo '<td class="bg-secondary">&nbsp;</td>';
                             }
-                        }
+                        
 
                         if ($result_activity[0]['student_no'] == 1) {
                             $txt_activity_type = "เดี่ยว";
