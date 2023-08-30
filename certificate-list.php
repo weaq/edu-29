@@ -15,110 +15,112 @@ get_header();
 
     global $wpdb;
 
-    // group status
-    $arr_group_status = [
-        "1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
-        "21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-        "22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-    ];
+    if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
+
+        // group status
+        $arr_group_status = [
+            "1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+            "21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+            "22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+        ];
 
 
-    $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+        $sql = "SELECT a.* FROM `wp_groupsara` a INNER JOIN wp_school_record b on a.group_id = b.group_id 
             WHERE a.group_id = {$_GET['group_id']} AND b.school_id = '{$current_user->user_login}' ";
-    $chk_permision = $wpdb->get_results($sql, ARRAY_A);
+        $chk_permision = $wpdb->get_results($sql, ARRAY_A);
 
-    echo '<div class="h4">ใบประกาศการประกวดแข่งขัน</div>';
+        echo '<div class="h4">ใบประกาศการประกวดแข่งขัน</div>';
 
-    $sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
-    $wp_schools = $wpdb->get_results($sql, ARRAY_A);
+        $sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
+        $wp_schools = $wpdb->get_results($sql, ARRAY_A);
 
-    //echo '<div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>';
+        //echo '<div class="fs-4">' . $wp_schools[0]['school_name'] . '</div>';
 
-    echo '<div class="row">';
-    echo '<div class="col-md-4">';
-    echo '<strong>กลุ่ม : </strong>';
-    echo '<select name="group" onchange="location = this.value;">';
-    echo '<option value="?group_status_id=0" selected >กรุณาเลือกกลุ่ม</option>';
-
-    foreach ($arr_group_status as $key => $value) {
-        $selected = ($_GET['group_status_id'] == $key) ? "selected" : "";
-        // list
-        echo '<option value="?group_status_id=' . $key . '" ' . $selected . '>' . $value['short_name'] . '</option>';
-    }
-
-    echo '</select>';
-    echo '</div>';
-
-
-    // group
-    if ($_GET['group_status_id']) {
-        $sql = "SELECT DISTINCT(group_id) as group_id, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' ORDER BY group_id ASC";
-        $query = $wpdb->get_results($sql, ARRAY_A);
-
-        echo '<div class="col-md-8">';
-        echo '<strong>กลุ่มสาระการเรียนรู้ : </strong>';
+        echo '<div class="row">';
+        echo '<div class="col-md-4">';
+        echo '<strong>กลุ่ม : </strong>';
         echo '<select name="group" onchange="location = this.value;">';
-        echo '<option value="?group_status_id=' . $_GET['group_status_id'] . '&group_id=0" selected >กรุณาเลือกกลุ่มสาระ</option>';
+        echo '<option value="?group_status_id=0" selected >กรุณาเลือกกลุ่ม</option>';
 
-        foreach ($query as $row) {
-            $selected = ($_GET['group_id'] == $row['group_id']) ? "selected" : "";
+        foreach ($arr_group_status as $key => $value) {
+            $selected = ($_GET['group_status_id'] == $key) ? "selected" : "";
             // list
-            echo '<option value="?group_status_id=' . $_GET['group_status_id'] . '&group_id=' . $row['group_id'] . '" ' . $selected . '>' . $row['group_name'] . '</option>';
+            echo '<option value="?group_status_id=' . $key . '" ' . $selected . '>' . $value['short_name'] . '</option>';
         }
 
         echo '</select>';
         echo '</div>';
-    }
-
-    echo "</div>";
-
-    // class
-    if ($_GET['group_status_id'] && $_GET['group_id']) {
-
-        // get class array
-        $sql = "SELECT DISTINCT(class_id) ,class_name FROM `wp_groupsara` WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' ORDER BY class_id ASC";
-        $arr_class = $wpdb->get_results($sql, ARRAY_A);
 
 
-        //
-        echo '<div>';
+        // group
+        if ($_GET['group_status_id']) {
+            $sql = "SELECT DISTINCT(group_id) as group_id, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' ORDER BY group_id ASC";
+            $query = $wpdb->get_results($sql, ARRAY_A);
 
-        $sql = "SELECT COUNT(activity_name), activity_name, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_id ASC";
+            echo '<div class="col-md-8">';
+            echo '<strong>กลุ่มสาระการเรียนรู้ : </strong>';
+            echo '<select name="group" onchange="location = this.value;">';
+            echo '<option value="?group_status_id=' . $_GET['group_status_id'] . '&group_id=0" selected >กรุณาเลือกกลุ่มสาระ</option>';
 
-        $query = $wpdb->get_results($sql, ARRAY_A);
+            foreach ($query as $row) {
+                $selected = ($_GET['group_id'] == $row['group_id']) ? "selected" : "";
+                // list
+                echo '<option value="?group_status_id=' . $_GET['group_status_id'] . '&group_id=' . $row['group_id'] . '" ' . $selected . '>' . $row['group_name'] . '</option>';
+            }
 
-        echo '<div class="fs-3 mt-3">รายการ' . $arr_group_status[$_GET['group_status_id']]['name'] . ' (' . $arr_group_status[$_GET['group_status_id']]['short_name'] . ') <br/>กลุ่มสาระการเรียนรู้ : ' . $query[0]['group_name'] . '</div>';
+            echo '</select>';
+            echo '</div>';
+        }
+
+        echo "</div>";
+
+        // class
+        if ($_GET['group_status_id'] && $_GET['group_id']) {
+
+            // get class array
+            $sql = "SELECT DISTINCT(class_id) ,class_name FROM `wp_groupsara` WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' ORDER BY class_id ASC";
+            $arr_class = $wpdb->get_results($sql, ARRAY_A);
+
+
+            //
+            echo '<div>';
+
+            $sql = "SELECT COUNT(activity_name), activity_name, group_name FROM wp_groupsara WHERE group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' GROUP BY activity_name ORDER BY activity_id ASC";
+
+            $query = $wpdb->get_results($sql, ARRAY_A);
+
+            echo '<div class="fs-3 mt-3">รายการ' . $arr_group_status[$_GET['group_status_id']]['name'] . ' (' . $arr_group_status[$_GET['group_status_id']]['short_name'] . ') <br/>กลุ่มสาระการเรียนรู้ : ' . $query[0]['group_name'] . '</div>';
 
     ?>
 
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>&nbsp;</th>
-                    <th colspan="<?php echo count($arr_class); ?>" class="text-center">ระดับ</th>
-                    <th>&nbsp;</th>
-                </tr>
-                <tr>
-                    <th>ชื่อกิจกรรม</th>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th colspan="<?php echo count($arr_class); ?>" class="text-center">ระดับ</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <tr>
+                        <th>ชื่อกิจกรรม</th>
+                        <?php
+                        foreach ($arr_class as $value) {
+                            echo '<th class="text-center">' . $value['class_name'] . '</th>';
+                        }
+                        ?>
+                        <th class="text-center">ประเภท</th>
+                    </tr>
+                </thead>
+                <tbody>
+
                     <?php
-                    foreach ($arr_class as $value) {
-                        echo '<th class="text-center">' . $value['class_name'] . '</th>';
-                    }
-                    ?>
-                    <th class="text-center">ประเภท</th>
-                </tr>
-            </thead>
-            <tbody>
 
-                <?php
+                    foreach ($query as $row) {
+                        echo '<tr>';
+                        echo '<td>' . $row['activity_name'] . '</td>';
 
-                foreach ($query as $row) {
-                    echo '<tr>';
-                    echo '<td>' . $row['activity_name'] . '</td>';
+                        $txt_activity_type = "";
 
-                    $txt_activity_type = "";
-
-                    foreach ($arr_class as $value) {
+                        foreach ($arr_class as $value) {
 
                             $sql = "SELECT * FROM wp_groupsara WHERE activity_name LIKE '%{$row['activity_name']}%' AND class_id = '{$value['class_id']}' AND group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' ";
                             $result_activity = $wpdb->get_results($sql, ARRAY_A);
@@ -140,7 +142,7 @@ get_header();
                                         echo '</td>';
                                     } else {
                                         echo '<td class="text-center">';
-                                        echo '<a href="../score-activity/?sID=' . $result_activity[0]['ID'] . '" target="_blank" >ใบประกาศ</a>';
+                                        echo '<a href="../export-data/export-certificate.php/?sID=' . $result_activity[0]['ID'] . '&school_id=' . $current_user->user_login . '" target="_blank" >ใบประกาศ</a>';
                                         echo '</td>';
                                     }
                                 } else {
@@ -149,40 +151,41 @@ get_header();
                             } else {
                                 echo '<td class="bg-secondary">&nbsp;</td>';
                             }
-                        
 
-                        if ($result_activity[0]['student_no'] == 1) {
-                            $txt_activity_type = "เดี่ยว";
-                        } else if ($result_activity[0]['student_no'] == 2) {
-                            $txt_activity_type = "คู่";
-                        } else if ($result_activity[0]['student_no'] >= 3) {
-                            if ($result_activity[0]['student_no'] == $result_activity[0]['student_no_min']) {
-                                $txt_activity_type = "ทีม " . $result_activity[0]['student_no'] . " คน";
-                            } else {
-                                $txt_activity_type = "ทีม " . $result_activity[0]['student_no_min'] . "-" . $result_activity[0]['student_no'] . " คน";
+
+                            if ($result_activity[0]['student_no'] == 1) {
+                                $txt_activity_type = "เดี่ยว";
+                            } else if ($result_activity[0]['student_no'] == 2) {
+                                $txt_activity_type = "คู่";
+                            } else if ($result_activity[0]['student_no'] >= 3) {
+                                if ($result_activity[0]['student_no'] == $result_activity[0]['student_no_min']) {
+                                    $txt_activity_type = "ทีม " . $result_activity[0]['student_no'] . " คน";
+                                } else {
+                                    $txt_activity_type = "ทีม " . $result_activity[0]['student_no_min'] . "-" . $result_activity[0]['student_no'] . " คน";
+                                }
                             }
                         }
+
+                        echo '<td class="text-center">' . $txt_activity_type . '</td>';
+
+                        echo '</tr>';
                     }
 
-                    echo '<td class="text-center">' . $txt_activity_type . '</td>';
+                    ?>
 
-                    echo '</tr>';
-                }
-
-                ?>
-
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
     <?php
 
 
+        }
+
+        echo '</div>';
     }
-
-    echo '</div>';
-
     ?>
 </div>
+
 
 <?php
 
