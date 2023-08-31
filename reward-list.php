@@ -46,6 +46,8 @@ get_header();
 
             <?php
 
+            $tmp_arr = [];
+
             foreach ($school_list as $key => $value) {
 
                 $sql = "SELECT 
@@ -57,15 +59,42 @@ get_header();
                 $school_cnt = $wpdb->get_results($sql, ARRAY_A);
                 $school_cnt_sum = $school_cnt[0]['cnt_1'] + $school_cnt[0]['cnt_2'] + $school_cnt[0]['cnt_3'];
 
+                $tmp_cnt_sort = ($school_cnt[0]['cnt_1'] * 3) + ($school_cnt[0]['cnt_2'] * 2) + ($school_cnt[0]['cnt_3'] * 1);
+
+                $tmp_arr[] = [
+                    "school_id" => $value['school_id'],
+                    "school_name" => $value['school_name'],
+                    "cnt_1" =>  $school_cnt[0]['cnt_1'],
+                    "cnt_2" =>  $school_cnt[0]['cnt_2'],
+                    "cnt_3" =>  $school_cnt[0]['cnt_3'],
+                    "cnt_sum" => $school_cnt_sum,
+                    "cnt_sort" => $tmp_cnt_sort,
+                ];
+            }
+            
+
+            function DescSort($val1, $val2)
+            {
+                #check if both the values are equal
+                if ($val1['cnt_sort'] == $val2['cnt_sort']) return 0;
+                #check if not equal, then compare values
+                return ($val1['cnt_sort'] < $val2['cnt_sort']) ? 1 : -1;
+            }
+            #apply usort method on the array
+            usort($tmp_arr, 'DescSort');
+            //print_r($tmp_arr);
+
+            
+            foreach ($tmp_arr as $key => $value) {
                 echo '<tr>';
                 echo '<td class="text-start">' . $value['school_name'] . '</td>';
-                echo '<td class="text-center">' . $school_cnt[0]['cnt_1'] . '</td>';
-                echo '<td class="text-center">' . $school_cnt[0]['cnt_2'] . '</td>';
-                echo '<td class="text-center">' . $school_cnt[0]['cnt_3'] . '</td>';
-                echo '<td class="text-center"><strong>' . $school_cnt_sum . '</strong></td>';
+                echo '<td class="text-center">' . $value['cnt_1'] . '</td>';
+                echo '<td class="text-center">' . $value['cnt_2'] . '</td>';
+                echo '<td class="text-center">' . $value['cnt_3'] . '</td>';
+                echo '<td class="text-center"><strong>' . $value['cnt_sum'] . '</strong></td>';
                 echo '</tr>';
-
             }
+
 
             ?>
         </tbody>
