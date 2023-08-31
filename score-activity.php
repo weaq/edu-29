@@ -77,15 +77,20 @@ get_header();
                         $teacher_txt .= $s['teacher_prefix'] . " " . $s['teacher_firstname'] . " " . $s['teacher_lastname'] . "<br>";
                     }
 
-                    if ($value['ranking'] == 1) {
-                        $ranking_txt = "ชนะเลิศ";
-                    } else  if ($value['ranking'] == 2) {
-                        $ranking_txt = "รองชนะเลิศ อันดับ 1";
-                    } else if ($value['ranking'] == 3) {
-                        $ranking_txt = "รองชนะเลิศ อันดับ 2";
+                    if ($value['score'] == 0) {
+                        $ranking_txt = "ไม่ได้เข้าร่วม";
                     } else {
-                        $ranking_txt = "รางวัลชมเชย";
+                        if ($value['ranking'] == 1) {
+                            $ranking_txt = "ชนะเลิศ";
+                        } else  if ($value['ranking'] == 2) {
+                            $ranking_txt = "รองชนะเลิศ อันดับ 1";
+                        } else if ($value['ranking'] == 3) {
+                            $ranking_txt = "รองชนะเลิศ อันดับ 2";
+                        } else {
+                            $ranking_txt = "";
+                        }
                     }
+
 
                     echo '<tr>';
                     echo '<td>' . $value['go_name'] . '</td>';
