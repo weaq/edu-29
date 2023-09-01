@@ -126,15 +126,28 @@ function process_contact_form()
 {
 	$current_user = wp_get_current_user();
 
-	print_r($_POST);
-
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 
 		global $wpdb;
 
 		$params = $_POST;
 
-		submitsForm($params);
+		// date diff check
+
+		$sql = "SELECT * FROM wp_groupsara WHERE ID = {$params['groupsara_id']} ";
+		$wp_groupsara = $wpdb->get_results($sql, ARRAY_A);		
+
+		$match_date = strtotime($wp_groupsara[0]['match_date']);
+
+		$datediff = time() - $match_date;
+
+		$day_diff = round($datediff / (60 * 60 * 24));
+
+		if ($day_diff <= 0) {
+			submitsForm($params);
+		} else {
+			echo "ปิดระบบการลงทะเบียนแล้ว " . $day_diff ;
+		}
 
 		die;
 	}
@@ -593,12 +606,13 @@ function submitsScoreForm($params)
 }
 
 //
-function buddhistCalendar($ymd) {
+function buddhistCalendar($ymd)
+{
 	$ymd = explode("-", $ymd);
-	$thai_month = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-	$y = $ymd[0]+543;
+	$thai_month = array('', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม');
+	$y = $ymd[0] + 543;
 	$m = $thai_month[intval($ymd[1])];
 	$d = intval($ymd[2]);
-	$output = "วันที่ " . $d . " เดือน " . $m . " พ.ศ. " . $y ;
+	$output = "วันที่ " . $d . " เดือน " . $m . " พ.ศ. " . $y;
 	return $output;
-  }
+}

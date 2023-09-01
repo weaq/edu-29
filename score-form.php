@@ -87,7 +87,8 @@ if (isset($_GET['sID'])) {
         <div class="container mt-3 mb-5">
             <div class="text-end">
                 <span class="me-5"><a href="../export-data/export-form-regis.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ใบลงทะเบียน</a></span>
-                <span><a href="../export-data/export-competition.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด</a></span>
+                <span class="me-5"><a href="../export-data/export-competition.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด</a></span>
+                <span class="me-5"><a href="../export-data/export-competition-with-name.php?sID=<?php echo $sID; ?>" target="_blank">พิมพ์ผลการประกวด + รายชื่อ</a></span>
             </div>
             <form name="contact_form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" autocomplete="on" accept-charset="utf-8">
                 <div class="row">
