@@ -26,6 +26,27 @@ get_header();
             "22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
         ];
 
+
+        // link certificte
+        if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
+        $sql = "SELECT * FROM wp_schools a 
+                    INNER JOIN (SELECT * FROM wp_school_score WHERE groupsara_id LIKE '{$sID}' AND school_id = '{$current_user->user_login}' ) b 
+                    ON a.school_id = b.school_id 
+                    ORDER BY b.score DESC ";
+        $is_certificate = $wpdb->get_results($sql, ARRAY_A);
+
+            if(count($is_certificate) > 0) {
+                echo '<div class="text-end">';
+                echo '<a href="../export-data/export-certificate.php/?sID=' . $sID . '&school_id=' . $current_user->user_login . '" target="_blank" >พิมพ์ใบประกาศ</a>';
+                echo '</div>';
+            }
+
+        }
+
+
+
+
+
         $sql = "SELECT * FROM wp_groupsara WHERE ID = {$sID} ";
         $wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
         echo '<div class="text-center h5 my-3">';
