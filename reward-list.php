@@ -49,6 +49,7 @@ get_header();
                         <th class="col-md-2 text-center">ชนะเลิศ</th>
                         <th class="col-md-2 text-center">รองชนะเลิศ อันดับ 1</th>
                         <th class="col-md-2 text-center">รองชนะเลิศ อันดับ 2</th>
+                        <th class="col-md-2 text-center">ชมเชย</th>
                         <th class="col-md-2 text-center">รวม</th>
                     </tr>
                 </thead>
@@ -63,16 +64,15 @@ get_header();
                         $sql = "SELECT 
                         count(case when ranking='1' then 1 else null end) as cnt_1 ,
                         count(case when ranking='2' then 1 else null end) as cnt_2 ,
-                        count(case when ranking='3' then 1 else null end) as cnt_3
+                        count(case when ranking='3' then 1 else null end) as cnt_3 , 
+                        count(case when ranking>'3' then 1 else null end) as cnt_over
                         FROM wp_school_score a 
                         INNER JOIN wp_groupsara b 
                         ON a.groupsara_id = b.ID
                         WHERE b.group_status = '{$key_group_status}' AND a.school_id = '{$value['school_id']}' ";
 
                         $school_cnt = $wpdb->get_results($sql, ARRAY_A);
-                        $school_cnt_sum = $school_cnt[0]['cnt_1'] + $school_cnt[0]['cnt_2'] + $school_cnt[0]['cnt_3'];
-
-                        $tmp_cnt_sort = ($school_cnt[0]['cnt_1'] * 3) + ($school_cnt[0]['cnt_2'] * 2) + ($school_cnt[0]['cnt_3'] * 1);
+                        $school_cnt_sum = $school_cnt[0]['cnt_1'] + $school_cnt[0]['cnt_2'] + $school_cnt[0]['cnt_3'] + $school_cnt[0]['cnt_over'];
 
                         $tmp_arr[] = [
                             "school_id" => $value['school_id'],
@@ -80,15 +80,17 @@ get_header();
                             "cnt_1" =>  $school_cnt[0]['cnt_1'],
                             "cnt_2" =>  $school_cnt[0]['cnt_2'],
                             "cnt_3" =>  $school_cnt[0]['cnt_3'],
+                            "cnt_over" =>  $school_cnt[0]['cnt_over'],
                             "cnt_sum" => $school_cnt_sum,
-                            "cnt_sort" => $tmp_cnt_sort,
                         ];
                     }
 
 
                     
-                    #apply usort method on the array
-                    usort($tmp_arr, 'DescSort');
+                    #sort array
+                    array_multisort(array_column($tmp_arr, 'cnt_1'), SORT_DESC, array_column($tmp_arr, 'cnt_2'), SORT_DESC, array_column($tmp_arr, 'cnt_3'), SORT_DESC, $tmp_arr);
+
+
                     //print_r($tmp_arr);
 
 
@@ -98,6 +100,7 @@ get_header();
                         echo '<td class="text-center">' . $value['cnt_1'] . '</td>';
                         echo '<td class="text-center">' . $value['cnt_2'] . '</td>';
                         echo '<td class="text-center">' . $value['cnt_3'] . '</td>';
+                        echo '<td class="text-center">' . $value['cnt_over'] . '</td>';
                         echo '<td class="text-center"><strong>' . $value['cnt_sum'] . '</strong></td>';
                         echo '</tr>';
                     }
@@ -116,14 +119,6 @@ get_header();
 </div>
 
 <?php
-function DescSort($val1, $val2)
-{
-    #check if both the values are equal
-    if ($val1['cnt_sort'] == $val2['cnt_sort']) return 0;
-    #check if not equal, then compare values
-    return ($val1['cnt_sort'] < $val2['cnt_sort']) ? 1 : -1;
-}
-
 get_footer();
 
 ?>
