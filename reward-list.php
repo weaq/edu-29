@@ -24,12 +24,17 @@ get_header();
 
 
     foreach ($arr_group_status as $key_group_status => $value_group_status) {
-        //echo $key_group_status . " = " . $value_group_status['short_name'] . '<br/>';
+        //echo $key_group_status . " = " . $value_group_status['short_name'] . '<br/>';       
 
-        $sql = "SELECT * FROM wp_schools a 
-            INNER JOIN (SELECT DISTINCT(school_id) AS school_id FROM wp_studentreg) b 
-            ON a.school_id = b.school_id 
-            ORDER BY a.ID ASC ";
+        $sql = "SELECT DISTINCT(a.school_id) AS school_id , a.go_id, c.school_name, c.go_name 
+                FROM wp_studentreg a 
+                INNER JOIN (SELECT * FROM wp_groupsara ) b 
+                ON a.groupsara_id = b.ID 
+                INNER JOIN wp_schools c 
+                ON a.school_id = c.school_id 
+                WHERE b.group_status = '{$key_group_status}'
+                ORDER BY school_id ASC";
+            
         $school_list = $wpdb->get_results($sql, ARRAY_A);
 
         $sql = "SELECT * FROM `wp_school_score` a 
@@ -86,7 +91,7 @@ get_header();
                     }
 
 
-                    
+
                     #sort array
                     array_multisort(array_column($tmp_arr, 'cnt_1'), SORT_DESC, array_column($tmp_arr, 'cnt_2'), SORT_DESC, array_column($tmp_arr, 'cnt_3'), SORT_DESC, $tmp_arr);
 
