@@ -91,13 +91,13 @@ function ranking_txt($ranking)
 function aword($score)
 {
     if ($score >= 80) {
-        $award = " ระดับเหรียญทอง";
+        $award = " ระดับเกียรติบัตรเหรียญทอง";
     } else if ($score >= 70) {
-        $award = " ระดับเหรียญเงิน";
+        $award = " ระดับเกียรติบัตรเหรียญเงิน";
     } else if ($score >= 60) {
-        $award = " ระดับเหรียญทองแดง";
+        $award = " ระดับเกียรติบัตรเหรียญทองแดง";
     } else if ($score >= 1) {
-        $award = " ชมเชย";
+        $award = " ระดับเกียรติบัตรชมเชย";
     } else {
         $award = "";
     }
