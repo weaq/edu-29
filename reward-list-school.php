@@ -49,7 +49,7 @@ get_header();
                 echo '<div class="h5 ms-4 mt-3">' . ranking_txt($i) . '</div>';
 
                 $tmp_group_id = "";
-
+                echo '<ul>';
                 foreach ($activity_list as $key => $value) {
                     echo '<div class="ms-5">';
                     if ($tmp_group_id != $value['group_id']) {
@@ -57,12 +57,15 @@ get_header();
                         $tmp_group_id = $value['group_id'];
                     }
                     echo '<div class="ms-4">';
-                    echo " กิจกรรม" . $value['activity_name'] . " " . $value['class_name'];
+                    echo '<li>';
+                    echo $value['activity_name'] . " " . $value['class_name'];
                     echo " ได้คะแนน " . $value['score'] . " ";
                     echo " " . aword($value['score']);
+                    echo '</li>';
                     echo '</div>';
                     echo '</div>';
                 }
+                echo '</ul>';
             }
         }
     }
