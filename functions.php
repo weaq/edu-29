@@ -30,11 +30,11 @@ function custom_js_remove_record()
 ?>
 	<script>
 		function js_remove_record() {
-			let text = "คุณแน่ใจหรือว่าต้องการ ลบข้อมูลการลงทะเบียน ?";
+			let text = "คุณแน่ใจหรือว่าต้องการ ลบข้อมูล ?";
 			if (confirm(text) == true) {
 				window.location = '<?php echo $url; ?>'
 			} else {
-				text = "You canceled!";
+				text = "ยกเลิกการลบข้อมูล";
 			}
 		}
 	</script>
@@ -74,9 +74,9 @@ function owner_regis_activity_list()
 	if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 		// group status
 		$arr_group_status = [
-			"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-			"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-			"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+			"1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+			"21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+			"22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 		];
 		$tmp_group_status = "";
 		$tmp_group_id = "";
@@ -126,15 +126,28 @@ function process_contact_form()
 {
 	$current_user = wp_get_current_user();
 
-	print_r($_POST);
-
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 
 		global $wpdb;
 
 		$params = $_POST;
 
-		submitsForm($params);
+		// date diff check
+
+		$sql = "SELECT * FROM wp_groupsara WHERE ID = {$params['groupsara_id']} ";
+		$wp_groupsara = $wpdb->get_results($sql, ARRAY_A);		
+
+		$match_date = strtotime($wp_groupsara[0]['match_date']);
+
+		$datediff = time() - $match_date;
+
+		$day_diff = round($datediff / (60 * 60 * 24));
+
+		if ($day_diff <= 0) {
+			submitsForm($params);
+		} else {
+			echo "ปิดระบบการลงทะเบียนแล้ว " . $day_diff ;
+		}
 
 		die;
 	}
@@ -458,26 +471,23 @@ function admin_view_regis_activity_list()
 	//if (is_user_logged_in() && $current_user->roles[0] == 'contributor' && $current_user->roles[0] == 'administrator') {
 	// group status
 	$arr_group_status = [
-		"1" => ["short_name" => "อปท", "name" => "การแข่งขันทักษะวิชาการ",],
-		"21" => ["short_name" => "สพป", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
-		"22" => ["short_name" => "สพม", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"1" => ["short_name" => "อปท.", "name" => "การแข่งขันทักษะวิชาการ",],
+		"21" => ["short_name" => "สพป.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
+		"22" => ["short_name" => "สพม.", "name" => "การแข่งขันงานศิลปหัตถกรรมนักเรียน",],
 	];
 	$tmp_group_status = "";
 	$tmp_group_id = "";
 	$tmp_activity_id = "";
 
-	$sql = "SELECT * FROM wp_schools WHERE school_id = {$current_user->user_login}";
-	$wp_schools = $wpdb->get_results($sql, ARRAY_A);
-
 	$sql = "SELECT a.ID AS studentreg_id, a.school_id AS student_school_id, c.school_name, a.groupsara_id AS groupsara_id , 
 				b.group_status, b.group_id, b.group_name, a.activity_id AS activity_id, b.activity_name, a.class_id, 
 				b.class_name, a.student_prefix, a.student_firstname, a.student_lastname , b.student_no_min, b.student_no
-				FROM `wp_studentreg` a 
+				FROM wp_studentreg a 
 				INNER JOIN wp_groupsara b 
 				ON a.groupsara_id = b.ID 
 				INNER JOIN wp_schools c 
 				ON a.school_id = c.school_id
-				ORDER BY `b`.`group_status` , `b`.`group_id` , `a`.`groupsara_id` , a.school_id ASC";
+				ORDER BY b.group_status , b.group_id , a.groupsara_id , a.school_id ASC";
 	$results = $wpdb->get_results($sql, ARRAY_A);
 	foreach ($results as $key => $value) {
 
@@ -527,3 +537,82 @@ function admin_view_regis_activity_list()
 }
 
 add_shortcode('shortcode_adminViewRegisActivityList', 'admin_view_regis_activity_list');
+
+
+// form score
+//add_action( 'admin_post_score_form', 'process_score_form' );
+
+add_action('admin_post_score_form', 'process_score_form');
+
+function process_score_form()
+{
+	$current_user = wp_get_current_user();
+
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_user_logged_in() && $current_user->roles[0] == 'contributor') {
+
+		global $wpdb;
+
+		$params = $_POST;
+
+		$sql = "SELECT a.* FROM wp_groupsara a INNER JOIN wp_school_record b on a.group_id = b.group_id 
+            WHERE a.ID = {$params['groupsara_id']} AND b.school_id = '{$current_user->user_login}' ";
+		$wp_groupsara = $wpdb->get_results($sql, ARRAY_A);
+
+		if (count($wp_groupsara) > 0) {
+
+			submitsScoreForm($params);
+		}
+
+
+
+		die;
+	}
+}
+
+function submitsScoreForm($params)
+{
+
+	global $wpdb;
+
+	$current_user = wp_get_current_user();
+
+	// sort value DESC
+	arsort($params['score']);
+
+	$i = 1;
+	foreach ($params['score'] as $key => $value) {
+
+		$sql = "SELECT * FROM wp_school_score WHERE groupsara_id = '{$params['groupsara_id']}' AND school_id = '{$key}'";
+		$result_school_score = $wpdb->get_results($sql, ARRAY_A);
+
+		if (COUNT($result_school_score) == 0) {
+			$sql = "INSERT INTO wp_school_score (id, groupsara_id, school_id, score, ranking) 
+				VALUES (NULL, '{$params['groupsara_id']}', '{$key}', '{$value}', '{$i}')
+				";
+			$wpdb->query($sql);
+		} else {
+			$tmp_ranking = ($value == 0) ? NULL : $i;
+			$sql = "UPDATE wp_school_score 
+					SET score = '{$value}' , ranking = '{$i}' 
+					WHERE wp_school_score.id = '{$result_school_score[0]['id']}' ";
+			$wpdb->query($sql);
+		}
+
+		$i++;
+	}
+
+	wp_redirect($params['base_page'] . '?success=1&sID=' . $params['groupsara_id']);
+	//exit;
+}
+
+//
+function buddhistCalendar($ymd)
+{
+	$ymd = explode("-", $ymd);
+	$thai_month = array('', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม');
+	$y = $ymd[0] + 543;
+	$m = $thai_month[intval($ymd[1])];
+	$d = intval($ymd[2]);
+	$output = "วันที่ " . $d . " เดือน " . $m . " พ.ศ. " . $y;
+	return $output;
+}

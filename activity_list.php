@@ -113,7 +113,7 @@ get_header();
 
 					foreach ($arr_class as $value) {
 
-						if (is_user_logged_in() && ($current_user->roles[0] == 'administrator' || $current_user->roles[0] == 'contributor')) {
+						if (is_user_logged_in() && $current_user->roles[0] == 'contributor') {
 
 							$sql = "SELECT * FROM wp_groupsara WHERE activity_name LIKE '%{$row['activity_name']}%' AND class_id = '{$value['class_id']}' AND group_status = '{$_GET['group_status_id']}' AND group_id = '{$_GET['group_id']}' ";
 							$result_activity = $wpdb->get_results($sql, ARRAY_A);
@@ -157,9 +157,11 @@ get_header();
 								$school_id_count = $wpdb->get_results($sql, ARRAY_A);
 
 								if ($school_id_count[0]['school_count']) {
-									echo '<td class="text-center">' . $school_id_count[0]['school_count'] . ' โรง</td>';
+									echo '<td class="text-center">';
+									echo '<a href="../activity-school/?sID=' . $result_activity[0]['ID'] . '" target="_blank" >' . $school_id_count[0]['school_count'] . ' โรง </a>';
+									echo '</td>';
 								} else {
-									echo '<td class="text-center">-</td>';
+									echo '<td class="text-center"> - </td>';
 								}
 							} else {
 								echo '<td class="bg-secondary">&nbsp;</td>';
